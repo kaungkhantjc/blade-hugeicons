@@ -1,28 +1,25 @@
-# Blade Icons Template
+![Social Card](https://github.com/kaungkhantjc/blade-hugeicons/blob/main/art/socialcard-blade-hugeicons.png)
 
-<a href="https://github.com/blade-organization/blade-heroicons/actions?query=workflow%3ATests">
-    <img src="https://github.com/blade-organization/blade-heroicons/workflows/Tests/badge.svg" alt="Tests">
+# Blade Hugeicons
+
+<a href="https://github.com/kaungkhantjc/blade-hugeicons/actions?query=workflow%3ATests">
+    <img src="https://github.com/kaungkhantjc/blade-hugeicons/workflows/Tests/badge.svg" alt="Tests">
 </a>
-<a href="https://packagist.org/packages/blade-organization/blade-heroicons">
-    <img src="https://img.shields.io/packagist/v/blade-organization/blade-heroicons" alt="Latest Stable Version">
+<a href="https://github.com/kaungkhantjc/blade-hugeicons/actions/workflows/coding-standards.yml">
+    <img src="https://github.com/kaungkhantjc/blade-hugeicons/actions/workflows/coding-standards.yml/badge.svg" alt="Coding Standards" />
 </a>
-<a href="https://packagist.org/packages/blade-organization/blade-heroicons">
-    <img src="https://img.shields.io/packagist/dt/blade-organization/blade-heroicons" alt="Total Downloads">
+<a href="https://packagist.org/packages/kaungkhantjc/blade-hugeicons">
+    <img src="https://img.shields.io/packagist/v/kaungkhantjc/blade-hugeicons" alt="Latest Stable Version">
+</a>
+<a href="https://packagist.org/packages/kaungkhantjc/blade-hugeicons">
+    <img src="https://img.shields.io/packagist/dt/kaungkhantjc/blade-hugeicons" alt="Total Downloads">
 </a>
 
-> This is a template repository for new icon packages for [Blade Icons](https://github.com/driesvints/blade-icons). Start a new repo with this and replace the relevant things below:
-> 
-> 1. `blade-organization` with your GitHub organization
-> 2. `blade-heroicons` with your repository name
-> 3. `Blade Heroicons` & `Blade Icons Template` with your icon set name
-> 4. Any other reference to `Heroicons` with your icon set name
-> 5. `Blade Developer` with your name
-> 
-> Then, make sure [the implementation](./src) is correct, that you set up [icon generation](https://github.com/driesvints/blade-icons#generating-icons) and that [your tests](./tests) pass. And remove this quote block from your readme. When you've published your package on Packagist, make sure to send it in to [the Blade Icons package list](https://github.com/driesvints/blade-icons#icon-packages).
 
-A package to easily make use of [Heroicons](https://github.com/refactoringui/heroicons) in your Laravel Blade views.
 
-For a full list of available icons see [the SVG directory](resources/svg) or preview them at [heroicons.com](https://heroicons.com/).
+A package to easily make use of [Hugeicons](https://hugeicons.com) - **~5,000+ (Stroke Rounded) Icons** in your Laravel Blade views.
+
+For a full list of available icons see [the SVG directory](resources/svg) or preview them at [hugeicons.com](https://hugeicons.com/icons).
 
 ## Requirements
 
@@ -32,49 +29,69 @@ For a full list of available icons see [the SVG directory](resources/svg) or pre
 ## Installation
 
 ```bash
-composer require blade-organization/blade-heroicons
+composer require kaungkhantjc/blade-hugeicons
 ```
 
-## Updating
+### ✨ How Icons Are Generated
 
-Please refer to [`the upgrade guide`](UPGRADE.md) when updating the library.
+The SVG icons in this package are generated directly from the **official [@hugeicons/core-free-icons](https://www.npmjs.com/package/@hugeicons/core-free-icons) npm package** — no third-party scrapers, no manual exports. Each icon is rendered server-side via React's `renderToStaticMarkup`, producing clean, minimal SVG markup with all unnecessary attributes stripped out. The result is pure, Blade-compatible SVG files ready for use with [Blade Icons](https://github.com/driesvints/blade-icons).
+
+### 🤖 Automated Updates via GitHub Actions
+
+This package is kept up to date automatically. A scheduled GitHub Actions workflow runs **daily at 00:00 UTC** and:
+
+1. Checks whether a new version of `@hugeicons/core-free-icons` has been published to npm.
+2. If an update is detected, installs dependencies, upgrades the package, and regenerates all SVG icons.
+3. Commits the updated `package.json` and regenerated icons, then **creates a new GitHub release automatically**.
+
+This means you always get the latest Hugeicons set simply by updating the Composer package — no manual intervention required.
+
+> If you find this package useful, a ⭐ on [GitHub](https://github.com/kaungkhantjc/blade-hugeicons) is much appreciated!
 
 ## Blade Icons
 
-Blade Heroicons uses Blade Icons under the hood. Please refer to [the Blade Icons readme](https://github.com/driesvints/blade-icons) for additional functionality. We also recommend to [enable icon caching](https://github.com/driesvints/blade-icons#caching) with this library.
+Blade Hugeicons uses Blade Icons under the hood. Please refer to [the Blade Icons readme](https://github.com/driesvints/blade-icons) for additional functionality. We also recommend to [enable icon caching](https://github.com/driesvints/blade-icons#caching) with this library.
 
 ## Configuration
 
-Blade Heroicons also offers the ability to use features from Blade Icons like default classes, default attributes, etc. If you'd like to configure these, publish the `blade-heroicons.php` config file:
+Blade Hugeicons also offers the ability to use features from Blade Icons like default classes, default attributes, etc. If you'd like to configure these, publish the `blade-hugeicons.php` config file:
 
 ```bash
-php artisan vendor:publish --tag=blade-heroicons-config
+php artisan vendor:publish --tag=blade-hugeicons-config
 ```
 
 ## Usage
 
 Icons can be used as self-closing Blade components which will be compiled to SVG icons:
 
-```blade
-<x-heroicon-o-adjustments/>
+```bladehtml
+<x-hugeicon-play/>
 ```
 
 You can also pass classes to your icon components:
 
-```blade
-<x-heroicon-o-adjustments class="w-6 h-6 text-gray-500"/>
+```bladehtml
+<x-hugeicon-play class="w-6 h-6 text-gray-500"/>
 ```
 
 And even use inline styles:
 
-```blade
-<x-heroicon-o-adjustments style="color: #555"/>
+```bladehtml
+<x-hugeicon-play style="color: #555"/>
 ```
 
-The solid icons can be referenced like this:
+You can modify the icon's stroke-width using several methods:
 
-```blade
-<x-heroicon-s-adjustments/>
+```bladehtml
+<x-hugeicon-play stroke-width="2"/>
+<x-hugeicon-play class="stroke-2" />
+<x-hugeicon-play style="stroke-width: 2px" />
+```
+
+The components support all standard SVG attributes, allowing for precise control over dimensions, color, and stroke properties.
+
+```bladehtml
+<x-hugeicon-play stroke-width="2" width="48" height="48" color="green" stroke-linecap="round"/>
 ```
 
 ### Raw SVG Icons
@@ -82,23 +99,23 @@ The solid icons can be referenced like this:
 If you want to use the raw SVG icons as assets, you can publish them using:
 
 ```bash
-php artisan vendor:publish --tag=blade-heroicons --force
+php artisan vendor:publish --tag=blade-hugeicons --force
 ```
 
 Then use them in your views like:
 
-```blade
-<img src="{{ asset('vendor/blade-heroicons/o-adjustments.svg') }}" width="10" height="10"/>
+```bladehtml
+<img src="{{ asset('vendor/blade-hugeicons/play.svg') }}" width="24" height="24"/>
 ```
 
 ## Changelog
 
-Check out the [CHANGELOG](CHANGELOG.md) in this repository for all the recent changes.
+Check out the [releases page](https://github.com/kaungkhantjc/blade-hugeicons/releases) in this repository for all the recent changes.
 
 ## Maintainers
 
-Blade Heroicons is developed and maintained by Blade Developer.
+Blade Hugeicons is developed and maintained by [Kaung Khant Kyaw](https://github.com/kaungkhantjc).
 
 ## License
 
-Blade Heroicons is open-sourced software licensed under [the MIT license](LICENSE.md).
+Blade Hugeicons is open-sourced software licensed under [the MIT license](LICENSE.md).

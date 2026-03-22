@@ -1,0 +1,114 @@
+name: Update HugeIcons
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Runs at 00:00 UTC every day
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Reason for manual trigger (optional)'
+        required: false
+        default: 'Manual update HugeIcons'
+
+permissions:
+  contents: write
+
+jobs:
+  update-icons:
+    name: Check, Update, and Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 'lts/*'
+          cache: 'npm' # Speeds up installation by caching dependencies
+
+      - name: Check for updates
+        id: check
+        run: |
+          LATEST_VERSION=$(npm show @hugeicons/core-free-icons version)
+          
+          # Extracts version and strips semantic prefixes like ^ or ~
+          CURRENT_VERSION=$(jq -r '.devDependencies["@hugeicons/core-free-icons"] | sub("^[^0-9]+"; "")' package.json)
+          
+          echo "Current Version: $CURRENT_VERSION"
+          echo "Latest Version: $LATEST_VERSION"
+
+          if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
+            echo "update_needed=true" >> $GITHUB_OUTPUT
+            echo "latest_version=$LATEST_VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "update_needed=false" >> $GITHUB_OUTPUT
+            echo "Already up to date. No action required."
+          fi
+
+      - name: Install dependencies, Update, and Generate
+        if: steps.check.outputs.update_needed == 'true'
+        run: |
+          # Clean install to ensure a consistent environment
+          npm ci
+          
+          # Explicitly update the package and save it to devDependencies
+          npm install @hugeicons/core-free-icons@${{ steps.check.outputs.latest_version }} --save-dev
+          
+          # If this throws an error, the script exits with code 1 and stops the workflow automatically.
+          npm run generate
+
+      - name: Determine new version tag
+        if: steps.check.outputs.update_needed == 'true'
+        id: tag
+        run: |
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+
+          if [ -z "$LATEST_TAG" ]; then
+            NEW_TAG="v1.0.0"
+          else
+            VERSION_WITHOUT_V="${LATEST_TAG#v}"
+            IFS='.' read -r -a VERSION_PARTS <<< "$VERSION_WITHOUT_V"
+
+            MAJOR="${VERSION_PARTS[0]:-1}"
+            MINOR="${VERSION_PARTS[1]:-0}"
+            PATCH="${VERSION_PARTS[2]:-0}"
+
+            PATCH=$((PATCH + 1))
+            NEW_TAG="v${MAJOR}.${MINOR}.${PATCH}"
+          fi
+
+          echo "new_tag=$NEW_TAG" >> $GITHUB_OUTPUT
+          echo "New Tag will be: $NEW_TAG"
+
+      - name: Commit, Tag, and Push
+        if: steps.check.outputs.update_needed == 'true'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Add only the files that were changed by the update and generation process
+          git add package.json resources/svg/
+
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "chore: update @hugeicons/core-free-icons to ${{ steps.check.outputs.latest_version }}"
+          
+            git push origin HEAD:${GITHUB_REF}
+
+            git tag ${{ steps.tag.outputs.new_tag }}
+            git push origin ${{ steps.tag.outputs.new_tag }}
+          else
+            echo "No changes were generated. Skipping commit."
+          fi
+
+      - name: Create Release
+        if: steps.check.outputs.update_needed == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.new_tag }}
+          name: ${{ steps.tag.outputs.new_tag }}
+          body: "Automated release: Updated `@hugeicons/core-free-icons` dependency to version `${{ steps.check.outputs.latest_version }}` and regenerated Blade icons."
+          generate_release_notes: true
