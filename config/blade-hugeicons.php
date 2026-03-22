@@ -52,7 +52,7 @@ return [
     'attributes' => [
         // 'width' => 50,
         // 'height' => 50,
-        'stroke-width' => '1.5'
+        'stroke-width' => '1.5',
     ],
 
 ];
