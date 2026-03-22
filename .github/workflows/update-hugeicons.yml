@@ -28,7 +28,6 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 'lts/*'
-          cache: 'npm' # Speeds up installation by caching dependencies
 
       - name: Check for updates
         id: check
@@ -52,8 +51,8 @@ jobs:
       - name: Install dependencies, Update, and Generate
         if: steps.check.outputs.update_needed == 'true'
         run: |
-          # Clean install to ensure a consistent environment
-          npm ci
+          # Install dependencies
+          npm install
           
           # Explicitly update the package and save it to devDependencies
           npm install @hugeicons/core-free-icons@${{ steps.check.outputs.latest_version }} --save-dev
