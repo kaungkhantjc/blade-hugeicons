@@ -1,4 +1,4 @@
-![Social Card](https://github.com/kaungkhantjc/blade-hugeicons/blob/main/art/socialcard-blade-hugeicons.png)
+![Social Card](https://github.com/kaungkhantjc/blade-hugeicons/blob/main/art/socialcard-blade-hugeicons.jpeg)
 
 # Blade Hugeicons
 
