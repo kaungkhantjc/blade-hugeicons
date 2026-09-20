@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "generate": "node scripts/generate.mjs"
+    "generate": "node --import ./scripts/register.mjs scripts/generate.mjs"
   },
   "devDependencies": {
     "@hugeicons/core-free-icons": "^4.3.3",
