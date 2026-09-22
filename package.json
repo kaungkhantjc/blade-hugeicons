@@ -4,7 +4,7 @@
     "generate": "node --import ./scripts/register.mjs scripts/generate.mjs"
   },
   "devDependencies": {
-    "@hugeicons/core-free-icons": "^4.3.4",
+    "@hugeicons/core-free-icons": "^4.3.5",
     "@hugeicons/react": "^1.1.6",
     "@types/node": "^25.5.0",
     "@types/react": "^19.2.14",
